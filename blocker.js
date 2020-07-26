@@ -12,9 +12,8 @@ const debounce = (func, delay) => {
   };
 };
 
-
 const runDebouncer = () => {
-  blockedList.length ? this.modifyDOM() : this.getBlockedList();
+  blockedList.length ? modifyDOM() : getBlockedList();
 };
 
 $(window).on("scroll", debounce(runDebouncer, 1500));
