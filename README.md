@@ -1,0 +1,1 @@
+### I was very frustrated to see some idiotic channels coming into my trending list in youtube, so as a solution i decided to create a plugin where you can specify the names of channels and it will remove the element from the dom, this is the source code of simple blocker plugin

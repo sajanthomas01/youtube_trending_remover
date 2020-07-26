@@ -1,0 +1,44 @@
+body {
+  min-width: 30em;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 30em;
+  border-radius: 5px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+img {
+  border-radius: 5px 5px 0 0;
+}
+
+.container {
+  width: 30em;
+  padding: 2px 16px;
+}
+
+h4 {
+  text-align: center;
+}
+
+input {
+  width: 24em;
+}
+
+button {
+  background-color: #e7e7e7;
+  color: black;
+  border: none;
+  padding: 5px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
