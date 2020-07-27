@@ -17,7 +17,7 @@ const runDebouncer = () => {
   blockedList.length ? modifyDOM() : getBlockedList();
 };
 
-$(window).on("scroll", debounce(runDebouncer, 1500));
+$(window).on("scroll", debounce(runDebouncer, 500));
 
 const getBlockedList = () => {
   chrome.storage.sync.get(["YTB_TRNDNG_BLK"], function (result) {
@@ -51,6 +51,9 @@ if (document.readyState === "ready" || document.readyState === "complete") {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // listen for messages sent from background.js
+  // here i believe some improvement is needed, i'm not getting status completed with url, so as a quick 
+  //workaround i wrapped in in settimeout
+  // any better idea will be appreciated :)
   if (request.message === "UPDATE") {
     if (request.url.url === hitURL) {
       setTimeout(() => {
