@@ -1,5 +1,6 @@
 let pollInterval = 3000;
 let blockedList = [];
+const hitURL = "https://www.youtube.com/feed/trending";
 
 // debounce taken from https://codeburst.io/throttling-and-debouncing-in-javascript-b01cad5c8edf
 const debounce = (func, delay) => {
@@ -47,3 +48,14 @@ if (document.readyState === "ready" || document.readyState === "complete") {
     }
   };
 }
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  // listen for messages sent from background.js
+  if (request.message === "UPDATE") {
+    if (request.url.url === hitURL) {
+      setTimeout(() => {
+        getBlockedList();
+      }, 3000);
+    }
+  }
+});
