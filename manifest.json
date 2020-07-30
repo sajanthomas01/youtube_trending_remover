@@ -12,16 +12,16 @@
     "default_icon": "icon16.png",
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "storage", "<all_urls>", "tabs", "webNavigation"],
+  "permissions": ["activeTab", "storage", "<all_urls>", "tabs"],
   "content_scripts": [
     {
       "matches": [
-        "http://www.youtube.com/feed/trending*",
-        "https://www.youtube.com/feed/trending*"
+        "http://www.youtube.com/*",
+        "https://www.youtube.com/*"
       ],
       "js": ["jquery.js", "blocker.js"],
       "css": ["custom.css"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ],
   "background": {
