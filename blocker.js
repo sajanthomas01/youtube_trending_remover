@@ -1,32 +1,46 @@
 let pollInterval = 3000;
 let blockedList = [];
 const hitURL = "https://www.youtube.com/feed/trending";
+var intervalRunner;
 
-// debounce taken from https://codeburst.io/throttling-and-debouncing-in-javascript-b01cad5c8edf
-const debounce = (func, delay) => {
-  let inDebounce;
-  return function () {
-    const context = this;
-    const args = arguments;
-    clearTimeout(inDebounce);
-    inDebounce = setTimeout(() => func.apply(context, args), delay);
-  };
-};
+// throttling taken from https://codeburst.io/throttling-and-debouncing-in-javascript-b01cad5c8edf
+const throttle = (func, limit) => {
+  let inThrottle
+  return function() {
+    const args = arguments
+    const context = this
+    if (!inThrottle) {
+      func.apply(context, args)
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  }
+}
 
 const runDebouncer = () => {
+  console.log("cleaning on scroll");
   blockedList.length ? modifyDOM() : getBlockedList();
 };
 
-$(window).on("scroll", debounce(runDebouncer, 500));
+window.addEventListener("scroll", throttle(runDebouncer, 1000));
 
 const getBlockedList = () => {
-  chrome.storage.sync.get(["YTB_TRNDNG_BLK"], function (result) {
-    if (result.YTB_TRNDNG_BLK) {
-      blockedList = JSON.parse(result.YTB_TRNDNG_BLK);
-      console.log(blockedList.join());
-      modifyDOM();
-    }
-  });
+  try {
+    chrome.storage.sync.get(["YTB_TRNDNG_BLK"], function (result) {
+      if (result.YTB_TRNDNG_BLK) {
+        blockedList = JSON.parse(result.YTB_TRNDNG_BLK);
+        console.log(blockedList.length, "==< length");
+        if (blockedList.length === 0) {
+          return clearInterval(intervalRunner);
+        }
+        modifyDOM();
+      } else {
+        return clearInterval(intervalRunner);
+      }
+    });
+  } catch (error) {
+    clearInterval(intervalRunner);
+  }
 };
 
 const modifyDOM = () => {
@@ -37,6 +51,7 @@ const modifyDOM = () => {
       }
     }
   );
+  clearInterval(intervalRunner);
 };
 
 if (document.readyState === "ready" || document.readyState === "complete") {
@@ -51,12 +66,15 @@ if (document.readyState === "ready" || document.readyState === "complete") {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // listen for messages sent from background.js
-  // here i believe some improvement is needed, i'm not getting status completed with url, so as a quick 
+  // here i believe some improvement is needed, i'm not getting status completed with url, so as a quick
   //workaround i wrapped in in settimeout
   // any better idea will be appreciated :)
-  if (request.message === "UPDATE") {
-    if (request.url.url === hitURL) {
-      setTimeout(() => {
+  console.log("Loc hit ==>", request);
+  if (request.message === "UPDATE" && request.url.status === "complete") {
+    if (window.location.href === hitURL) {
+      clearInterval(intervalRunner);
+      intervalRunner = setInterval(() => {
+        console.log("===> running trending list cleaner");
         getBlockedList();
       }, 3000);
     }
