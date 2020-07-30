@@ -18,7 +18,6 @@ const throttle = (func, limit) => {
 }
 
 const runDebouncer = () => {
-  console.log("cleaning on scroll");
   blockedList.length ? modifyDOM() : getBlockedList();
 };
 
@@ -29,7 +28,6 @@ const getBlockedList = () => {
     chrome.storage.sync.get(["YTB_TRNDNG_BLK"], function (result) {
       if (result.YTB_TRNDNG_BLK) {
         blockedList = JSON.parse(result.YTB_TRNDNG_BLK);
-        console.log(blockedList.length, "==< length");
         if (blockedList.length === 0) {
           return clearInterval(intervalRunner);
         }
@@ -51,6 +49,7 @@ const modifyDOM = () => {
       }
     }
   );
+  console.log('Cleaned the trending shit')
   clearInterval(intervalRunner);
 };
 
@@ -69,12 +68,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // here i believe some improvement is needed, i'm not getting status completed with url, so as a quick
   //workaround i wrapped in in settimeout
   // any better idea will be appreciated :)
-  console.log("Loc hit ==>", request);
+  // console.log("Loc hit ==>", request);
   if (request.message === "UPDATE" && request.url.status === "complete") {
     if (window.location.href === hitURL) {
       clearInterval(intervalRunner);
       intervalRunner = setInterval(() => {
-        console.log("===> running trending list cleaner");
         getBlockedList();
       }, 3000);
     }
