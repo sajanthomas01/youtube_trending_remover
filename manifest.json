@@ -15,10 +15,8 @@
   "permissions": ["activeTab", "storage", "<all_urls>", "tabs"],
   "content_scripts": [
     {
-      "matches": [
-        "http://www.youtube.com/*",
-        "https://www.youtube.com/*"
-      ],
+      "matches": ["http://www.youtube.com/*", "https://www.youtube.com/*"],
+      "all_frames": true,
       "js": ["jquery.js", "blocker.js"],
       "css": ["custom.css"],
       "run_at": "document_idle"
